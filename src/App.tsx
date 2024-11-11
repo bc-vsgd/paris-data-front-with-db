@@ -1,11 +1,13 @@
 import "./App.css";
-import { Box } from "@mui/material";
-import { useEffect } from "react";
-import { useStore } from "./store/useStore";
+import { useEffect, useState, useMemo } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import SummaryPage from "./pages/SummaryPage";
+import { DataSet } from "./types/dataSets/DataSet";
 
 function App() {
   const apiUrl = import.meta.env.VITE_API_URI;
-  const setDataSets = useStore((state) => state.setDataSets);
+  const [dataSets, setDataSets] = useState<DataSet[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,9 +15,6 @@ function App() {
         const response = await fetch(`${apiUrl}/all-spots`);
         if (response.ok) {
           const data = await response.json();
-          // console.log(data[0].path);
-          // console.log(data[1].path);
-
           setDataSets(data);
         } else {
           console.error("Failed to fetch data");
@@ -26,9 +25,33 @@ function App() {
     };
 
     fetchData();
-  }, [apiUrl, setDataSets]);
+  }, [apiUrl]);
 
-  return <Box>App</Box>;
+  const groupedDataSets = useMemo(() => {
+    const groups: Record<string, DataSet[]> = {};
+    dataSets.forEach((dataSet) => {
+      if (!groups[dataSet.openDataPath]) {
+        groups[dataSet.openDataPath] = [];
+      }
+      groups[dataSet.openDataPath].push(dataSet);
+    });
+    return Object.entries(groups);
+  }, [dataSets]);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage dataSets={dataSets} />} />
+        {groupedDataSets.map(([path, groupDataSets]) => (
+          <Route
+            key={path}
+            path={path}
+            element={<SummaryPage dataSets={groupDataSets} />}
+          />
+        ))}
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

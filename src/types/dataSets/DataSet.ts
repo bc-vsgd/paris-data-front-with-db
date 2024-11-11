@@ -15,6 +15,9 @@ export interface DataSet {
   count: number;
   Spots?: Spot[];
   spotType: "RegionalInterestHeritage" | "HouseOfFamous";
+  openDataSrc: string;
+  openDataPath: string;
+  openDataUrl: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
