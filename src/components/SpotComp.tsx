@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Circle, Popup, Polygon, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Box from "@mui/material/Box";
@@ -17,10 +17,6 @@ interface SpotCompProps {
 }
 
 const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
-  useEffect(() => {
-    console.log("Spot Data:", spotData);
-  }, [spotData]);
-
   const getNestedValue = (obj: Record<string, any>, keys: string[]): any => {
     return keys.reduce(
       (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
@@ -153,8 +149,11 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
         case "Polygon":
           return (
             <Polygon
-              positions={(coordinates[0] as [number, number][]).map((coord) =>
-                Array.isArray(coord) ? [coord[1], coord[0]] : [0, 0]
+              positions={(coordinates[0][0] as [number, number][]).map(
+                (coord) =>
+                  Array.isArray(coord) && coord.length === 2
+                    ? [coord[1], coord[0]]
+                    : [0, 0]
               )}
               pathOptions={{ color: "blue" }}
             >
@@ -162,24 +161,26 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
             </Polygon>
           );
         case "MultiPolygon":
-          return coordinates.map(
-            (polygonCoords: [number, number][], index: number) => (
-              <Polygon
-                key={index}
-                positions={polygonCoords[0].map((coord) =>
-                  Array.isArray(coord) ? [coord[1], coord[0]] : [0, 0]
-                )}
-                pathOptions={{ color: "blue" }}
-              >
-                {renderPopupContent()}
-              </Polygon>
-            )
-          );
+          return coordinates.map((polygonCoords: any, index: number) => (
+            <Polygon
+              key={index}
+              positions={polygonCoords[0].map((coord: [number, number]) =>
+                Array.isArray(coord) && coord.length === 2
+                  ? [coord[1], coord[0]]
+                  : [0, 0]
+              )}
+              pathOptions={{ color: "blue" }}
+            >
+              {renderPopupContent()}
+            </Polygon>
+          ));
         case "LineString":
           return (
             <Polyline
               positions={(coordinates as [number, number][]).map((coord) =>
-                Array.isArray(coord) ? [coord[1], coord[0]] : [0, 0]
+                Array.isArray(coord) && coord.length === 2
+                  ? [coord[1], coord[0]]
+                  : [0, 0]
               )}
               pathOptions={{ color: "blue" }}
             >
@@ -192,7 +193,9 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
               <Polyline
                 key={index}
                 positions={lineCoords.map((coord) =>
-                  Array.isArray(coord) ? [coord[1], coord[0]] : [0, 0]
+                  Array.isArray(coord) && coord.length === 2
+                    ? [coord[1], coord[0]]
+                    : [0, 0]
                 )}
                 pathOptions={{ color: "blue" }}
               >
@@ -206,7 +209,7 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
               <Circle
                 key={index}
                 center={
-                  Array.isArray(pointCoords)
+                  Array.isArray(pointCoords) && pointCoords.length === 2
                     ? [pointCoords[1], pointCoords[0]]
                     : [0, 0]
                 }

@@ -4,8 +4,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { DataSet } from "../types/dataSets/DataSet";
 
 function HomePage({ dataSets }: { dataSets: DataSet[] }) {
-  console.log(dataSets.length);
-
   const groupedDataSets = useMemo(() => {
     const groups: Record<string, string> = {};
     dataSets.forEach((dataSet) => {
@@ -15,10 +13,12 @@ function HomePage({ dataSets }: { dataSets: DataSet[] }) {
     });
     return Object.entries(groups);
   }, [dataSets]);
-  console.log(groupedDataSets.length);
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+      <Link component={RouterLink} to="/get-data">
+        Get data
+      </Link>
       {groupedDataSets.map(([path, src]) => (
         <Link key={path} component={RouterLink} to={path}>
           {src}
