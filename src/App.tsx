@@ -3,6 +3,8 @@ import { useEffect, useState, useMemo } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SummaryPage from "./pages/SummaryPage";
+import MapPage from "./pages/MapPage";
+import Header from "./components/Header";
 import { DataSet } from "./types/dataSets/DataSet";
 
 function App() {
@@ -40,6 +42,7 @@ function App() {
 
   return (
     <Router>
+      <Header />
       <Routes>
         <Route path="/" element={<HomePage dataSets={dataSets} />} />
         {groupedDataSets.map(([path, groupDataSets]) => (
@@ -47,6 +50,13 @@ function App() {
             key={path}
             path={path}
             element={<SummaryPage dataSets={groupDataSets} />}
+          />
+        ))}
+        {dataSets.map((dataSet) => (
+          <Route
+            key={dataSet.path}
+            path={dataSet.path}
+            element={<MapPage dataSet={dataSet} />}
           />
         ))}
       </Routes>

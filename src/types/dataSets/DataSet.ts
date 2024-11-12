@@ -13,7 +13,7 @@ export interface DataSet {
   address: string[];
   notDisplayed: string[];
   count: number;
-  Spots?: Spot[];
+  spots?: Spot[];
   spotType: "RegionalInterestHeritage" | "HouseOfFamous";
   openDataSrc: string;
   openDataPath: string;
