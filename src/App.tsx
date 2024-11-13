@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import SummaryPage from "./pages/SummaryPage";
 import MapPage from "./pages/MapPage";
-import GetDataPage from "./pages/GetDataPage";
+import OverviewDataPage from "./pages/getData/OverviewDataPage";
+import DetailedDataPage from "./pages/getData/DetailedDataPage";
 import Header from "./components/Header";
 import { DataSet } from "./types/dataSets/DataSet";
 
@@ -46,7 +47,8 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage dataSets={dataSets} />} />
-        <Route path="/get-data" element={<GetDataPage />} />
+        <Route path="/overview-data" element={<OverviewDataPage />} />
+        <Route path="/detailed-data" element={<DetailedDataPage />} />
         {groupedDataSets.map(([path, groupDataSets]) => (
           <Route
             key={path}

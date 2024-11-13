@@ -8,7 +8,7 @@ interface DataSet {
   spots: any[];
 }
 
-const GetDataPage: React.FC = () => {
+const OverviewDataPage: React.FC = () => {
   const apiUrl = import.meta.env.VITE_API_URI;
   const [dataSets, setDataSets] = useState<DataSet[]>([]);
 
@@ -40,4 +40,4 @@ const GetDataPage: React.FC = () => {
   );
 };
 
-export default GetDataPage;
+export default OverviewDataPage;

@@ -16,8 +16,11 @@ function HomePage({ dataSets }: { dataSets: DataSet[] }) {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-      <Link component={RouterLink} to="/get-data">
-        Get data
+      <Link component={RouterLink} to="/overview-data">
+        Data: vue d'ensemble
+      </Link>
+      <Link component={RouterLink} to="/detailed-data">
+        Data: détails
       </Link>
       {groupedDataSets.map(([path, src]) => (
         <Link key={path} component={RouterLink} to={path}>
