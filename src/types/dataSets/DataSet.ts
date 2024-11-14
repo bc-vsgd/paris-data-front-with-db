@@ -14,7 +14,7 @@ export interface DataSet {
   notDisplayed: string[];
   count: number;
   spots?: Spot[];
-  spotType: "RegionalInterestHeritage" | "HouseOfFamous";
+  spotType: "RegionalInterestHeritage" | "HouseOfFamous" | "Poi121314";
   openDataSrc: string;
   openDataPath: string;
   openDataUrl: string;

@@ -22,6 +22,9 @@ function HomePage({ dataSets }: { dataSets: DataSet[] }) {
       <Link component={RouterLink} to="/detailed-data">
         Data: détails
       </Link>
+      <Link component={RouterLink} to="/update-data">
+        Data: mise à jour
+      </Link>
       {groupedDataSets.map(([path, src]) => (
         <Link key={path} component={RouterLink} to={path}>
           {src}

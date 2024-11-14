@@ -7,6 +7,7 @@ import MapPage from "./pages/MapPage";
 import OverviewDataPage from "./pages/getData/OverviewDataPage";
 import DetailedDataPage from "./pages/getData/DetailedDataPage";
 import Header from "./components/Header";
+import UpdateDataPage from "./pages/updateData/UpdateDataPage";
 import { DataSet } from "./types/dataSets/DataSet";
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
         <Route path="/" element={<HomePage dataSets={dataSets} />} />
         <Route path="/overview-data" element={<OverviewDataPage />} />
         <Route path="/detailed-data" element={<DetailedDataPage />} />
+        <Route path="/update-data" element={<UpdateDataPage />} />
         {groupedDataSets.map(([path, groupDataSets]) => (
           <Route
             key={path}
