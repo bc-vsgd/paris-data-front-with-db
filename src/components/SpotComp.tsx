@@ -17,6 +17,8 @@ interface SpotCompProps {
 }
 
 const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
+  console.log(componentKeys.coords);
+
   const getNestedValue = (obj: Record<string, any>, keys: string[]): any => {
     return keys.reduce(
       (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
@@ -28,9 +30,11 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
   let geometryType: string | undefined, coordinates: any;
   if (componentKeys.featureIsPoint && componentKeys.coords) {
     const coordsKeys = componentKeys.coords.split(".");
+
     const coordsValue = getNestedValue(spotData, coordsKeys);
     if (coordsValue && typeof coordsValue === "object") {
       const [lonValue, latValue] = Object.values(coordsValue);
+
       if (typeof lonValue === "number" && typeof latValue === "number") {
         lon = lonValue;
         lat = latValue;
@@ -226,6 +230,8 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
     }
     return null;
   };
+  console.log(lat);
+  console.log(lon);
 
   return componentKeys.featureIsPoint && lat && lon ? (
     <Circle center={[lat, lon]} radius={10} pathOptions={{ color: "blue" }}>
