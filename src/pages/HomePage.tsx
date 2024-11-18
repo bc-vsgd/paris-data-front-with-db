@@ -1,18 +1,31 @@
 import { Box, Link } from "@mui/material";
 import { useMemo } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { DataSet } from "../types/dataSets/DataSet";
 
 function HomePage({ dataSets }: { dataSets: DataSet[] }) {
+  const navigate = useNavigate();
+
   const groupedDataSets = useMemo(() => {
-    const groups: Record<string, string> = {};
+    const groups: Record<
+      string,
+      { openDataPath: string; openDataSrc: string; openDataUrl: string }
+    > = {};
     dataSets.forEach((dataSet) => {
       if (!groups[dataSet.openDataPath]) {
-        groups[dataSet.openDataPath] = dataSet.openDataSrc;
+        groups[dataSet.openDataPath] = {
+          openDataPath: dataSet.openDataPath,
+          openDataSrc: dataSet.openDataSrc,
+          openDataUrl: dataSet.openDataUrl,
+        };
       }
     });
-    return Object.entries(groups);
+    return Object.values(groups);
   }, [dataSets]);
+
+  const handlePostDataClick = () => {
+    navigate("/post-data", { state: { openDataKeys: groupedDataSets } });
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
@@ -25,9 +38,12 @@ function HomePage({ dataSets }: { dataSets: DataSet[] }) {
       <Link component={RouterLink} to="/update-data">
         Data: mise à jour
       </Link>
-      {groupedDataSets.map(([path, src]) => (
-        <Link key={path} component={RouterLink} to={path}>
-          {src}
+      <Link onClick={handlePostDataClick} sx={{ cursor: "pointer" }}>
+        Data: enregistrer un nouveau jeu
+      </Link>
+      {groupedDataSets.map(({ openDataPath, openDataSrc }) => (
+        <Link key={openDataPath} component={RouterLink} to={openDataPath}>
+          {openDataSrc}
         </Link>
       ))}
     </Box>
