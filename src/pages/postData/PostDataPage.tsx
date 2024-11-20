@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
-import { Box, Button } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Modal, Typography, IconButton } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/postData/useStore";
+import axios from "axios";
 
 import SpotKeysComp from "../../components/postData/SpotKeysComp";
 import DisplayKeysComp from "../../components/postData/DisplayKeysComp";
@@ -9,6 +11,7 @@ import OpenDataKeysComp from "../../components/postData/OpenDataKeysComp";
 
 const PostDataPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     spotName,
     spotObject,
@@ -32,7 +35,14 @@ const PostDataPage: React.FC = () => {
     setDisplayKeysValidationError,
     displayKeys,
     setDisplayKeys,
+    selectedOpenDataKeys,
+    setOpenDataKeysValidationError,
   } = useStore();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isFirstRequestSuccessful, setIsFirstRequestSuccessful] =
+    useState(false);
 
   useEffect(() => {
     if (location.state && location.state.openDataKeys) {
@@ -40,10 +50,11 @@ const PostDataPage: React.FC = () => {
     }
   }, [location.state]);
 
-  const handleCreateData = () => {
+  const handleCreateData = async () => {
     // Clear previous validation errors
     setSpotKeysValidationError("");
     setDisplayKeysValidationError("");
+    setOpenDataKeysValidationError("");
 
     // Validation logic for SpotKeysComp
     if (!spotName || !spotObject || !pathName || !apiUrl || !lon || !lat) {
@@ -63,6 +74,19 @@ const PostDataPage: React.FC = () => {
     // Validation logic for DisplayKeysComp
     if (!title || !url || !coords) {
       setDisplayKeysValidationError("Remplir les champs obligatoires.");
+      return;
+    }
+
+    // Validation logic for OpenDataKeysComp
+    if (
+      !selectedOpenDataKeys ||
+      !selectedOpenDataKeys.openDataPath ||
+      !selectedOpenDataKeys.openDataSrc ||
+      !selectedOpenDataKeys.openDataUrl
+    ) {
+      setOpenDataKeysValidationError(
+        "Tous les champs de la source Open Data doivent être remplis."
+      );
       return;
     }
 
@@ -97,13 +121,55 @@ const PostDataPage: React.FC = () => {
     // Add lon and lat to conditionalKeys
     conditionalKeys.push(lon, lat);
 
-    // Log values to console
-    console.log("spotName:", spotName);
-    console.log("spotObject:", parsedSpotObject);
-    console.log("pathName:", pathName);
-    console.log("apiUrl:", apiUrl);
-    console.log("conditionalKeys:", conditionalKeys);
-    console.log("displayKeys:", displayKeys);
+    // API request to backend
+    const backendApiUrl = import.meta.env.VITE_API_URI;
+    try {
+      await axios.post(`${backendApiUrl}/add-data-set`, {
+        spotName,
+        spotObject: parsedSpotObject,
+        pathName,
+        apiUrl,
+        conditionalKeys,
+        displayKeys,
+        openDataKeys: selectedOpenDataKeys,
+      });
+      setIsFirstRequestSuccessful(true);
+      setModalMessage("Requête réussie");
+    } catch (error: any) {
+      setIsFirstRequestSuccessful(false);
+      setModalMessage(
+        `Erreur: ${error?.message || "Une erreur inconnue est survenue"}`
+      );
+    } finally {
+      setModalOpen(true);
+    }
+  };
+
+  const handleSaveToDatabase = async () => {
+    setModalOpen(false);
+    const backendApiUrl = import.meta.env.VITE_API_URI;
+    try {
+      await axios.post(`${backendApiUrl}${pathName}`);
+      setIsFirstRequestSuccessful(false); // Second request completed, reset the state
+      setModalMessage("Enregistrement réussi");
+    } catch (error: any) {
+      setModalMessage(
+        `Erreur: ${error?.message || "Une erreur inconnue est survenue"}`
+      );
+    } finally {
+      setModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    if (isFirstRequestSuccessful) {
+      // Clear all data and navigate to home
+      setSpotKeysValidationError("");
+      setDisplayKeysValidationError("");
+      setOpenDataKeysValidationError("");
+      navigate("/");
+    }
   };
 
   return (
@@ -121,6 +187,64 @@ const PostDataPage: React.FC = () => {
       >
         Créer le jeu, les spots et les routes du back
       </Button>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-title" variant="h6" component="h2">
+            Résultat de la requête
+          </Typography>
+          <Typography id="modal-description" sx={{ mt: 2 }}>
+            {modalMessage}
+          </Typography>
+          {(modalMessage !== "Enregistrement réussi" ||
+            isFirstRequestSuccessful) && (
+            <IconButton
+              onClick={() => setModalOpen(false)}
+              sx={{ position: "absolute", top: 8, right: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+          )}
+          {isFirstRequestSuccessful &&
+            modalMessage !== "Enregistrement réussi" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSaveToDatabase}
+                sx={{ mt: 2 }}
+              >
+                Enregistrer dans la base de données
+              </Button>
+            )}
+          {isFirstRequestSuccessful &&
+            modalMessage === "Enregistrement réussi" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleCloseModal}
+                sx={{ mt: 2 }}
+              >
+                Fermer
+              </Button>
+            )}
+        </Box>
+      </Modal>
     </Box>
   );
 };

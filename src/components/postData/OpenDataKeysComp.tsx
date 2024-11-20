@@ -19,9 +19,14 @@ interface OpenDataKey {
 }
 
 const OpenDataKeysComp: React.FC = () => {
-  const { openDataKeys, setOpenDataKeys } = useStore();
-  const [selectedOpenDataKey, setSelectedOpenDataKey] =
-    useState<OpenDataKey | null>(openDataKeys[0] || null);
+  const {
+    openDataKeys,
+    setOpenDataKeys,
+    selectedOpenDataKeys,
+    setSelectedOpenDataKeys,
+  } = useStore();
+  // console.log(selectedOpenDataKeys);
+
   const [showAddSourceModal, setShowAddSourceModal] = useState(false);
   const [newOpenDataSrc, setNewOpenDataSrc] = useState("");
   const [newOpenDataPath, setNewOpenDataPath] = useState("");
@@ -39,7 +44,7 @@ const OpenDataKeysComp: React.FC = () => {
       openDataUrl: newOpenDataUrl,
     };
     setOpenDataKeys([...openDataKeys, newSource]);
-    setSelectedOpenDataKey(newSource);
+    setSelectedOpenDataKeys(newSource);
     setNewOpenDataKey(newSource);
     setShowAddSourceModal(false);
     setNewOpenDataSrc("");
@@ -53,7 +58,7 @@ const OpenDataKeysComp: React.FC = () => {
         (key) => key.openDataSrc !== newOpenDataKey?.openDataSrc
       )
     );
-    setSelectedOpenDataKey(openDataKeys[0] || null);
+    setSelectedOpenDataKeys(openDataKeys.length > 1 ? openDataKeys[0] : null);
     setNewOpenDataKey(null);
   };
 
@@ -70,12 +75,12 @@ const OpenDataKeysComp: React.FC = () => {
         <>
           <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
             <Select
-              value={selectedOpenDataKey?.openDataSrc || ""}
+              value={selectedOpenDataKeys?.openDataSrc || ""}
               onChange={(e) => {
                 const selectedKey = openDataKeys.find(
                   (key) => key.openDataSrc === e.target.value
                 );
-                setSelectedOpenDataKey(selectedKey || null);
+                setSelectedOpenDataKeys(selectedKey || null);
               }}
               displayEmpty
               sx={{ minWidth: 300, mr: 2 }}
@@ -105,7 +110,7 @@ const OpenDataKeysComp: React.FC = () => {
             )}
           </Box>
 
-          {selectedOpenDataKey && (
+          {selectedOpenDataKeys && (
             <Box
               sx={{
                 position: "relative",
@@ -115,15 +120,15 @@ const OpenDataKeysComp: React.FC = () => {
               }}
             >
               <Typography sx={{ mb: 1 }}>
-                <strong>Nom:</strong> {selectedOpenDataKey.openDataSrc}
+                <strong>Nom:</strong> {selectedOpenDataKeys.openDataSrc}
               </Typography>
               <Typography sx={{ mb: 1 }}>
                 <strong>Chemin front:</strong>{" "}
-                {selectedOpenDataKey.openDataPath}
+                {selectedOpenDataKeys.openDataPath}
               </Typography>
               <Typography sx={{ mb: 1 }}>
                 <strong>Url page d'accueil open data:</strong>{" "}
-                {selectedOpenDataKey.openDataUrl}
+                {selectedOpenDataKeys.openDataUrl}
               </Typography>
             </Box>
           )}

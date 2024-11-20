@@ -41,8 +41,12 @@ interface StoreState {
   setSpotKeysValidationError: (error: string) => void;
   displayKeysValidationError: string;
   setDisplayKeysValidationError: (error: string) => void;
+  openDataKeysValidationError: string;
+  setOpenDataKeysValidationError: (error: string) => void;
   displayKeys: DisplayKeys;
   setDisplayKeys: (keys: DisplayKeys) => void;
+  selectedOpenDataKeys: OpenDataKey | null;
+  setSelectedOpenDataKeys: (key: OpenDataKey | null) => void;
 }
 
 interface OpenDataKey {
@@ -108,6 +112,9 @@ export const useStore = create<StoreState>((set) => ({
   displayKeysValidationError: "",
   setDisplayKeysValidationError: (error) =>
     set({ displayKeysValidationError: error }),
+  openDataKeysValidationError: "",
+  setOpenDataKeysValidationError: (error) =>
+    set({ openDataKeysValidationError: error }),
   displayKeys: {
     title: "",
     comment: "",
@@ -122,4 +129,6 @@ export const useStore = create<StoreState>((set) => ({
     path: "",
   },
   setDisplayKeys: (keys) => set({ displayKeys: keys }),
+  selectedOpenDataKeys: null,
+  setSelectedOpenDataKeys: (key) => set({ selectedOpenDataKeys: key }),
 }));
