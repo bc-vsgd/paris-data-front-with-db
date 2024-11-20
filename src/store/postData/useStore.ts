@@ -19,8 +19,8 @@ interface StoreState {
   setComment: (comment: string) => void;
   url: string;
   setUrl: (url: string) => void;
-  featureIsPoint: string;
-  setFeatureIsPoint: (feature: string) => void;
+  featureIsPoint: boolean;
+  setFeatureIsPoint: (feature: boolean) => void;
   coords: string;
   setCoords: (coords: string) => void;
   fixedDisplayed: string;
@@ -35,12 +35,34 @@ interface StoreState {
   setNotDisplayed: (notDisplayed: string) => void;
   openDataKeys: OpenDataKey[];
   setOpenDataKeys: (keys: OpenDataKey[]) => void;
+  conditionalKeys: string[];
+  setConditionalKeys: (keys: string[]) => void;
+  spotKeysValidationError: string;
+  setSpotKeysValidationError: (error: string) => void;
+  displayKeysValidationError: string;
+  setDisplayKeysValidationError: (error: string) => void;
+  displayKeys: DisplayKeys;
+  setDisplayKeys: (keys: DisplayKeys) => void;
 }
 
 interface OpenDataKey {
   openDataPath: string;
   openDataSrc: string;
   openDataUrl: string;
+}
+
+interface DisplayKeys {
+  title: string;
+  comment: string;
+  url: string;
+  featureIsPoint: boolean;
+  coords: string;
+  fixedDisplayed: string[];
+  img: string[];
+  firstDisplayed: string[];
+  address: string[];
+  notDisplayed: string[];
+  path: string;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -62,7 +84,7 @@ export const useStore = create<StoreState>((set) => ({
   setComment: (comment) => set({ comment }),
   url: "",
   setUrl: (url) => set({ url }),
-  featureIsPoint: "false",
+  featureIsPoint: true,
   setFeatureIsPoint: (feature) => set({ featureIsPoint: feature }),
   coords: "",
   setCoords: (coords) => set({ coords }),
@@ -78,4 +100,26 @@ export const useStore = create<StoreState>((set) => ({
   setNotDisplayed: (notDisplayed) => set({ notDisplayed }),
   openDataKeys: [],
   setOpenDataKeys: (keys) => set({ openDataKeys: keys }),
+  conditionalKeys: [],
+  setConditionalKeys: (keys) => set({ conditionalKeys: keys }),
+  spotKeysValidationError: "",
+  setSpotKeysValidationError: (error) =>
+    set({ spotKeysValidationError: error }),
+  displayKeysValidationError: "",
+  setDisplayKeysValidationError: (error) =>
+    set({ displayKeysValidationError: error }),
+  displayKeys: {
+    title: "",
+    comment: "",
+    url: "",
+    featureIsPoint: true,
+    coords: "",
+    fixedDisplayed: [""],
+    img: [""],
+    firstDisplayed: [""],
+    address: [""],
+    notDisplayed: [""],
+    path: "",
+  },
+  setDisplayKeys: (keys) => set({ displayKeys: keys }),
 }));

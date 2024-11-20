@@ -24,16 +24,22 @@ const DisplayKeysComp: React.FC = () => {
     setAddress,
     notDisplayed,
     setNotDisplayed,
+    displayKeysValidationError,
   } = useStore();
 
   return (
     <Box sx={{ p: 2, border: "1px solid #ccc", mt: 4 }}>
+      {displayKeysValidationError && (
+        <Typography sx={{ color: "red", mb: 2 }}>
+          {displayKeysValidationError}
+        </Typography>
+      )}
       <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold" }}>
         Précisions pour l'affichage
       </Typography>
       {/* Titre */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <Typography sx={{ flex: 1, fontWeight: "bold" }}>Titre:</Typography>
+        <Typography sx={{ flex: 1, fontWeight: "bold" }}>Titre: *</Typography>
         <TextField
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -58,7 +64,7 @@ const DisplayKeysComp: React.FC = () => {
       {/* Url de base */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography sx={{ flex: 1, fontWeight: "bold" }}>
-          Url de base:
+          Url de base: *
         </Typography>
         <TextField
           value={url}
@@ -71,11 +77,11 @@ const DisplayKeysComp: React.FC = () => {
       {/* Le spot est un point */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography sx={{ flex: 1, fontWeight: "bold" }}>
-          Le spot est un point:
+          Le spot est un point: *
         </Typography>
         <Select
           value={featureIsPoint}
-          onChange={(e) => setFeatureIsPoint(e.target.value)}
+          onChange={(e) => setFeatureIsPoint(e.target.value === "true")}
           variant="outlined"
           sx={{ flex: 2 }}
         >
@@ -86,7 +92,7 @@ const DisplayKeysComp: React.FC = () => {
       {/* Objet contenant les coordonnées */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography sx={{ flex: 1, fontWeight: "bold" }}>
-          Objet contenant les coordonnées:
+          Objet contenant les coordonnées: *
         </Typography>
         <TextField
           value={coords}

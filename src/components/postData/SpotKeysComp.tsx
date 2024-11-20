@@ -16,10 +16,16 @@ const SpotKeysComp: React.FC = () => {
     setLon,
     lat,
     setLat,
+    spotKeysValidationError,
   } = useStore();
 
   return (
-    <>
+    <Box sx={{ p: 2, border: "1px solid #ccc" }}>
+      {spotKeysValidationError && (
+        <Typography sx={{ color: "red", mb: 2 }}>
+          {spotKeysValidationError}
+        </Typography>
+      )}
       {/* Nom du modèle mongoose */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography sx={{ flex: 1, fontWeight: "bold" }}>
@@ -133,7 +139,7 @@ const SpotKeysComp: React.FC = () => {
           />
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 
