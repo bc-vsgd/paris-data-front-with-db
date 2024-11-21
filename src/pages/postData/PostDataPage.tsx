@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Modal, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  Modal,
+  Typography,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/postData/useStore";
@@ -29,6 +36,22 @@ const PostDataPage: React.FC = () => {
     firstDisplayed,
     address,
     notDisplayed,
+    setSpotName,
+    setSpotObject,
+    setPathName,
+    setApiUrl,
+    setLon,
+    setLat,
+    setTitle,
+    setComment,
+    setUrl,
+    setFeatureIsPoint,
+    setCoords,
+    setFixedDisplayed,
+    setImg,
+    setFirstDisplayed,
+    setAddress,
+    setNotDisplayed,
     setOpenDataKeys,
     conditionalKeys,
     setSpotKeysValidationError,
@@ -39,10 +62,12 @@ const PostDataPage: React.FC = () => {
     setOpenDataKeysValidationError,
   } = useStore();
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [firstModalOpen, setFirstModalOpen] = useState(false);
+  const [secondModalOpen, setSecondModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isFirstRequestSuccessful, setIsFirstRequestSuccessful] =
     useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (location.state && location.state.openDataKeys) {
@@ -141,33 +166,54 @@ const PostDataPage: React.FC = () => {
         `Erreur: ${error?.message || "Une erreur inconnue est survenue"}`
       );
     } finally {
-      setModalOpen(true);
+      setFirstModalOpen(true);
     }
   };
 
   const handleSaveToDatabase = async () => {
-    setModalOpen(false);
+    setFirstModalOpen(false);
+    setIsLoading(true);
     const backendApiUrl = import.meta.env.VITE_API_URI;
     try {
       await axios.post(`${backendApiUrl}${pathName}`);
-      setIsFirstRequestSuccessful(false); // Second request completed, reset the state
       setModalMessage("Enregistrement réussi");
     } catch (error: any) {
       setModalMessage(
         `Erreur: ${error?.message || "Une erreur inconnue est survenue"}`
       );
     } finally {
-      setModalOpen(true);
+      setIsLoading(false);
+      setSecondModalOpen(true);
     }
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    if (isFirstRequestSuccessful) {
+  const handleCloseFirstModal = () => {
+    setFirstModalOpen(false);
+  };
+
+  const handleCloseSecondModal = () => {
+    setSecondModalOpen(false);
+    if (modalMessage === "Enregistrement réussi") {
       // Clear all data and navigate to home
       setSpotKeysValidationError("");
       setDisplayKeysValidationError("");
       setOpenDataKeysValidationError("");
+      setSpotName("");
+      setSpotObject("");
+      setPathName("");
+      setApiUrl("");
+      setLon("");
+      setLat("");
+      setTitle("");
+      setComment("");
+      setUrl("");
+      setFeatureIsPoint(false);
+      setCoords("");
+      setFixedDisplayed("");
+      setImg("");
+      setFirstDisplayed("");
+      setAddress("");
+      setNotDisplayed("");
       navigate("/");
     }
   };
@@ -188,8 +234,8 @@ const PostDataPage: React.FC = () => {
         Créer le jeu, les spots et les routes du back
       </Button>
       <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={firstModalOpen}
+        onClose={handleCloseFirstModal}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
@@ -212,37 +258,81 @@ const PostDataPage: React.FC = () => {
           <Typography id="modal-description" sx={{ mt: 2 }}>
             {modalMessage}
           </Typography>
-          {(modalMessage !== "Enregistrement réussi" ||
-            isFirstRequestSuccessful) && (
+          {!isFirstRequestSuccessful && (
             <IconButton
-              onClick={() => setModalOpen(false)}
+              onClick={handleCloseFirstModal}
               sx={{ position: "absolute", top: 8, right: 8 }}
             >
               <CloseIcon />
             </IconButton>
           )}
-          {isFirstRequestSuccessful &&
-            modalMessage !== "Enregistrement réussi" && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSaveToDatabase}
-                sx={{ mt: 2 }}
-              >
-                Enregistrer dans la base de données
-              </Button>
-            )}
-          {isFirstRequestSuccessful &&
-            modalMessage === "Enregistrement réussi" && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleCloseModal}
-                sx={{ mt: 2 }}
-              >
-                Fermer
-              </Button>
-            )}
+          {isFirstRequestSuccessful && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSaveToDatabase}
+              sx={{ mt: 2 }}
+            >
+              Enregistrer dans la base de données
+            </Button>
+          )}
+        </Box>
+      </Modal>
+      <Modal
+        open={secondModalOpen}
+        onClose={handleCloseSecondModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress />
+              <Typography sx={{ ml: 2 }}>Veuillez patienter...</Typography>
+            </Box>
+          ) : (
+            <>
+              <Typography id="modal-description" sx={{ mt: 2 }}>
+                {modalMessage}
+              </Typography>
+              {modalMessage.startsWith("Erreur") && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSaveToDatabase}
+                  sx={{ mt: 2 }}
+                >
+                  Enregistrer dans la base de données
+                </Button>
+              )}
+              {modalMessage === "Enregistrement réussi" && (
+                <IconButton
+                  onClick={handleCloseSecondModal}
+                  sx={{ position: "absolute", top: 8, right: 8 }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              )}
+            </>
+          )}
         </Box>
       </Modal>
     </Box>
