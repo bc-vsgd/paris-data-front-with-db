@@ -25,6 +25,8 @@ const DisplayKeysComp: React.FC = () => {
     notDisplayed,
     setNotDisplayed,
     displayKeysValidationError,
+    spotCoords,
+    setSpotCoords,
   } = useStore();
 
   return (
@@ -80,7 +82,7 @@ const DisplayKeysComp: React.FC = () => {
           Le spot est un point: *
         </Typography>
         <Select
-          value={featureIsPoint}
+          value={featureIsPoint ? "true" : "false"}
           onChange={(e) => setFeatureIsPoint(e.target.value === "true")}
           variant="outlined"
           sx={{ flex: 2 }}
@@ -92,7 +94,7 @@ const DisplayKeysComp: React.FC = () => {
       {/* Objet contenant les coordonnées */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography sx={{ flex: 1, fontWeight: "bold" }}>
-          Objet contenant les coordonnées: *
+          Coordonnées du point, de la ligne, du polygone, etc.: *
         </Typography>
         <TextField
           value={coords}
@@ -102,6 +104,21 @@ const DisplayKeysComp: React.FC = () => {
           sx={{ flex: 2 }}
         />
       </Box>
+      {/* Objet contenant les coordonnées du point (si applicable) */}
+      {!featureIsPoint && (
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <Typography sx={{ flex: 1, fontWeight: "bold" }}>
+            Objet contenant les coordonnées du point: *
+          </Typography>
+          <TextField
+            value={spotCoords}
+            onChange={(e) => setSpotCoords(e.target.value)}
+            label="Ex: geo_point_2d"
+            variant="outlined"
+            sx={{ flex: 2 }}
+          />
+        </Box>
+      )}
       {/* Affichage de la Popup */}
       <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: "bold" }}>
         Affichage de la Popup (aucun élément requis)

@@ -47,6 +47,8 @@ interface StoreState {
   setDisplayKeys: (keys: DisplayKeys) => void;
   selectedOpenDataKeys: OpenDataKey | null;
   setSelectedOpenDataKeys: (key: OpenDataKey | null) => void;
+  spotCoords: string;
+  setSpotCoords: (coords: string) => void;
 }
 
 interface OpenDataKey {
@@ -61,6 +63,7 @@ interface DisplayKeys {
   url: string;
   featureIsPoint: boolean;
   coords: string;
+  spotCoords: string;
   fixedDisplayed: string[];
   img: string[];
   firstDisplayed: string[];
@@ -121,6 +124,7 @@ export const useStore = create<StoreState>((set) => ({
     url: "",
     featureIsPoint: true,
     coords: "",
+    spotCoords: "",
     fixedDisplayed: [""],
     img: [""],
     firstDisplayed: [""],
@@ -131,4 +135,6 @@ export const useStore = create<StoreState>((set) => ({
   setDisplayKeys: (keys) => set({ displayKeys: keys }),
   selectedOpenDataKeys: null,
   setSelectedOpenDataKeys: (key) => set({ selectedOpenDataKeys: key }),
+  spotCoords: "",
+  setSpotCoords: (coords) => set({ spotCoords: coords }),
 }));

@@ -7,6 +7,7 @@ export interface DataSet {
   url: string;
   featureIsPoint: boolean;
   coords: string;
+  spotCoords: string;
   fixedDisplayed: string[];
   img: string[];
   firstDisplayed?: string[];

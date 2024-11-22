@@ -7,6 +7,7 @@ interface SpotCompProps {
   componentKeys: {
     featureIsPoint: boolean;
     coords: string;
+    spotCoords: string;
     fixedDisplayed: string[];
     img: string[];
     firstDisplayed: string[];
@@ -17,7 +18,8 @@ interface SpotCompProps {
 }
 
 const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
-  console.log(componentKeys.coords);
+  console.log("coords: ", componentKeys.coords);
+  console.log("spot coords: ", componentKeys.spotCoords);
 
   const getNestedValue = (obj: Record<string, any>, keys: string[]): any => {
     return keys.reduce(
