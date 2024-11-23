@@ -7,7 +7,6 @@ export interface DataSet {
   url: string;
   featureIsPoint: boolean;
   coords: string;
-  spotCoords: string;
   fixedDisplayed: string[];
   img: string[];
   firstDisplayed?: string[];
@@ -15,11 +14,11 @@ export interface DataSet {
   notDisplayed: string[];
   count: number;
   spots?: Spot[];
-  //   spotType: "RegionalInterestHeritage" | "HouseOfFamous" | "Poi121314";
-  spotType: string;
+  spotType: "RegionalInterestHeritage" | "HouseOfFamous" | "Poi121314";
   openDataSrc: string;
   openDataPath: string;
   openDataUrl: string;
+  spotCoords: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

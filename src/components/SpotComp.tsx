@@ -7,20 +7,17 @@ interface SpotCompProps {
   componentKeys: {
     featureIsPoint: boolean;
     coords: string;
-    spotCoords: string;
     fixedDisplayed: string[];
     img: string[];
     firstDisplayed: string[];
     address: string[];
     notDisplayed: string[];
+    spotCoords: string;
   };
   spotData: Record<string, any>;
 }
 
 const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
-  console.log("coords: ", componentKeys.coords);
-  console.log("spot coords: ", componentKeys.spotCoords);
-
   const getNestedValue = (obj: Record<string, any>, keys: string[]): any => {
     return keys.reduce(
       (acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined),
@@ -32,11 +29,9 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
   let geometryType: string | undefined, coordinates: any;
   if (componentKeys.featureIsPoint && componentKeys.coords) {
     const coordsKeys = componentKeys.coords.split(".");
-
     const coordsValue = getNestedValue(spotData, coordsKeys);
     if (coordsValue && typeof coordsValue === "object") {
       const [lonValue, latValue] = Object.values(coordsValue);
-
       if (typeof lonValue === "number" && typeof latValue === "number") {
         lon = lonValue;
         lat = latValue;
@@ -150,55 +145,59 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
   );
 
   const renderGeometry = () => {
+    const spotCoordsKey = componentKeys.spotCoords;
+    const spotCoordsValue = getNestedValue(spotData, spotCoordsKey.split("."));
+    const renderCircle =
+      spotCoordsValue && typeof spotCoordsValue === "object" ? (
+        <Circle
+          center={[spotCoordsValue.lat, spotCoordsValue.lon]}
+          radius={10}
+          pathOptions={{ color: "black" }}
+        />
+      ) : null;
+
     if (geometryType && coordinates) {
       switch (geometryType) {
         case "Polygon":
           return (
-            <Polygon
-              positions={(coordinates[0][0] as [number, number][]).map(
-                (coord) =>
+            <>
+              <Polygon
+                positions={(coordinates[0] as [number, number][]).map((coord) =>
                   Array.isArray(coord) && coord.length === 2
                     ? [coord[1], coord[0]]
                     : [0, 0]
-              )}
-              pathOptions={{ color: "blue" }}
-            >
-              {renderPopupContent()}
-            </Polygon>
+                )}
+                pathOptions={{ color: "blue" }}
+              >
+                {renderPopupContent()}
+              </Polygon>
+              {renderCircle}
+            </>
           );
         case "MultiPolygon":
-          return coordinates.map((polygonCoords: any, index: number) => (
-            <Polygon
-              key={index}
-              positions={polygonCoords[0].map((coord: [number, number]) =>
-                Array.isArray(coord) && coord.length === 2
-                  ? [coord[1], coord[0]]
-                  : [0, 0]
-              )}
-              pathOptions={{ color: "blue" }}
-            >
-              {renderPopupContent()}
-            </Polygon>
-          ));
+          return (
+            <>
+              {coordinates.map((polygonCoords: any, index: number) => (
+                <Polygon
+                  key={index}
+                  positions={polygonCoords[0].map((coord: [number, number]) =>
+                    Array.isArray(coord) && coord.length === 2
+                      ? [coord[1], coord[0]]
+                      : [0, 0]
+                  )}
+                  pathOptions={{ color: "blue" }}
+                >
+                  {renderPopupContent()}
+                </Polygon>
+              ))}
+              {renderCircle}
+            </>
+          );
         case "LineString":
           return (
-            <Polyline
-              positions={(coordinates as [number, number][]).map((coord) =>
-                Array.isArray(coord) && coord.length === 2
-                  ? [coord[1], coord[0]]
-                  : [0, 0]
-              )}
-              pathOptions={{ color: "blue" }}
-            >
-              {renderPopupContent()}
-            </Polyline>
-          );
-        case "MultiLineString":
-          return coordinates.map(
-            (lineCoords: [number, number][], index: number) => (
+            <>
               <Polyline
-                key={index}
-                positions={lineCoords.map((coord) =>
+                positions={(coordinates as [number, number][]).map((coord) =>
                   Array.isArray(coord) && coord.length === 2
                     ? [coord[1], coord[0]]
                     : [0, 0]
@@ -207,33 +206,58 @@ const SpotComp: React.FC<SpotCompProps> = ({ componentKeys, spotData }) => {
               >
                 {renderPopupContent()}
               </Polyline>
-            )
+              {renderCircle}
+            </>
+          );
+        case "MultiLineString":
+          return (
+            <>
+              {coordinates.map(
+                (lineCoords: [number, number][], index: number) => (
+                  <Polyline
+                    key={index}
+                    positions={lineCoords.map((coord) =>
+                      Array.isArray(coord) && coord.length === 2
+                        ? [coord[1], coord[0]]
+                        : [0, 0]
+                    )}
+                    pathOptions={{ color: "blue" }}
+                  >
+                    {renderPopupContent()}
+                  </Polyline>
+                )
+              )}
+              {renderCircle}
+            </>
           );
         case "MultiPoint":
-          return coordinates.map(
-            (pointCoords: [number, number], index: number) => (
-              <Circle
-                key={index}
-                center={
-                  Array.isArray(pointCoords) && pointCoords.length === 2
-                    ? [pointCoords[1], pointCoords[0]]
-                    : [0, 0]
-                }
-                radius={10}
-                pathOptions={{ color: "blue" }}
-              >
-                {renderPopupContent()}
-              </Circle>
-            )
+          return (
+            <>
+              {coordinates.map(
+                (pointCoords: [number, number], index: number) => (
+                  <Circle
+                    key={index}
+                    center={
+                      Array.isArray(pointCoords) && pointCoords.length === 2
+                        ? [pointCoords[1], pointCoords[0]]
+                        : [0, 0]
+                    }
+                    radius={10}
+                    pathOptions={{ color: "blue" }}
+                  >
+                    {renderPopupContent()}
+                  </Circle>
+                )
+              )}
+              {renderCircle}
+            </>
           );
         default:
-          return null;
+          return renderCircle;
       }
     }
-    return null;
+    return renderCircle;
   };
-  console.log(lat);
-  console.log(lon);
 
   return componentKeys.featureIsPoint && lat && lon ? (
     <Circle center={[lat, lon]} radius={10} pathOptions={{ color: "blue" }}>

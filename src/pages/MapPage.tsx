@@ -15,12 +15,12 @@ function MapPage({ dataSet }: MapPageProps) {
   const componentKeys = {
     featureIsPoint: dataSet.featureIsPoint,
     coords: dataSet.coords,
-    spotCoords: dataSet.spotCoords,
     fixedDisplayed: dataSet.fixedDisplayed,
     img: dataSet.img,
     firstDisplayed: dataSet.firstDisplayed || [],
     address: dataSet.address,
     notDisplayed: dataSet.notDisplayed,
+    spotCoords: dataSet.spotCoords || "",
   };
 
   return (

@@ -37,23 +37,23 @@ const PostDataPage: React.FC = () => {
     address,
     notDisplayed,
     spotCoords,
-    setSpotName,
-    setSpotObject,
-    setPathName,
-    setApiUrl,
-    setLon,
-    setLat,
-    setTitle,
-    setComment,
-    setUrl,
-    setFeatureIsPoint,
-    setCoords,
-    setFixedDisplayed,
-    setImg,
-    setFirstDisplayed,
-    setAddress,
-    setNotDisplayed,
-    setSpotCoords,
+    // setSpotName,
+    // setSpotObject,
+    // setPathName,
+    // setApiUrl,
+    // setLon,
+    // setLat,
+    // setTitle,
+    // setComment,
+    // setUrl,
+    // setFeatureIsPoint,
+    // setCoords,
+    // setFixedDisplayed,
+    // setImg,
+    // setFirstDisplayed,
+    // setAddress,
+    // setNotDisplayed,
+    // setSpotCoords,
     setOpenDataKeys,
     conditionalKeys,
     setSpotKeysValidationError,
@@ -158,6 +158,8 @@ const PostDataPage: React.FC = () => {
 
     // API request to backend
     const backendApiUrl = import.meta.env.VITE_API_URI;
+    console.log(displayKeys);
+
     try {
       await axios.post(`${backendApiUrl}/add-data-set`, {
         spotName,
@@ -205,26 +207,26 @@ const PostDataPage: React.FC = () => {
     setSecondModalOpen(false);
     if (modalMessage === "Enregistrement réussi") {
       // Clear all data and navigate to home
-      setSpotKeysValidationError("");
-      setDisplayKeysValidationError("");
-      setOpenDataKeysValidationError("");
-      setSpotName("");
-      setSpotObject("");
-      setPathName("");
-      setApiUrl("");
-      setLon("");
-      setLat("");
-      setTitle("");
-      setComment("");
-      setUrl("");
-      setFeatureIsPoint(false);
-      setCoords("");
-      setSpotCoords("");
-      setFixedDisplayed("");
-      setImg("");
-      setFirstDisplayed("");
-      setAddress("");
-      setNotDisplayed("");
+      // setSpotKeysValidationError("");
+      // setDisplayKeysValidationError("");
+      // setOpenDataKeysValidationError("");
+      // setSpotName("");
+      // setSpotObject("");
+      // setPathName("");
+      // setApiUrl("");
+      // setLon("");
+      // setLat("");
+      // setTitle("");
+      // setComment("");
+      // setUrl("");
+      // setFeatureIsPoint(false);
+      // setCoords("");
+      // setSpotCoords("");
+      // setFixedDisplayed("");
+      // setImg("");
+      // setFirstDisplayed("");
+      // setAddress("");
+      // setNotDisplayed("");
       navigate("/");
     }
   };
