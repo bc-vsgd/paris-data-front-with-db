@@ -37,28 +37,10 @@ const PostDataPage: React.FC = () => {
     address,
     notDisplayed,
     spotCoords,
-    // setSpotName,
-    // setSpotObject,
-    // setPathName,
-    // setApiUrl,
-    // setLon,
-    // setLat,
-    // setTitle,
-    // setComment,
-    // setUrl,
-    // setFeatureIsPoint,
-    // setCoords,
-    // setFixedDisplayed,
-    // setImg,
-    // setFirstDisplayed,
-    // setAddress,
-    // setNotDisplayed,
-    // setSpotCoords,
     setOpenDataKeys,
     conditionalKeys,
     setSpotKeysValidationError,
     setDisplayKeysValidationError,
-    displayKeys,
     setDisplayKeys,
     selectedOpenDataKeys,
     setOpenDataKeysValidationError,
@@ -91,6 +73,7 @@ const PostDataPage: React.FC = () => {
 
     // Convert spotObject from string to actual object
     let parsedSpotObject;
+
     try {
       parsedSpotObject = Function(`"use strict";return (${spotObject})`)();
     } catch (error) {
@@ -158,7 +141,6 @@ const PostDataPage: React.FC = () => {
 
     // API request to backend
     const backendApiUrl = import.meta.env.VITE_API_URI;
-    console.log(displayKeys);
 
     try {
       await axios.post(`${backendApiUrl}/add-data-set`, {
@@ -167,7 +149,20 @@ const PostDataPage: React.FC = () => {
         pathName,
         apiUrl,
         conditionalKeys,
-        displayKeys,
+        displayKeys: {
+          title,
+          comment,
+          url,
+          featureIsPoint,
+          coords,
+          spotCoords: finalSpotCoords,
+          fixedDisplayed: fixedDisplayedArray,
+          img: imgArray,
+          firstDisplayed: firstDisplayedArray,
+          address: addressArray,
+          notDisplayed: notDisplayedArray,
+          path: pathName,
+        },
         openDataKeys: selectedOpenDataKeys,
       });
       setIsFirstRequestSuccessful(true);
@@ -206,27 +201,6 @@ const PostDataPage: React.FC = () => {
   const handleCloseSecondModal = () => {
     setSecondModalOpen(false);
     if (modalMessage === "Enregistrement réussi") {
-      // Clear all data and navigate to home
-      // setSpotKeysValidationError("");
-      // setDisplayKeysValidationError("");
-      // setOpenDataKeysValidationError("");
-      // setSpotName("");
-      // setSpotObject("");
-      // setPathName("");
-      // setApiUrl("");
-      // setLon("");
-      // setLat("");
-      // setTitle("");
-      // setComment("");
-      // setUrl("");
-      // setFeatureIsPoint(false);
-      // setCoords("");
-      // setSpotCoords("");
-      // setFixedDisplayed("");
-      // setImg("");
-      // setFirstDisplayed("");
-      // setAddress("");
-      // setNotDisplayed("");
       navigate("/");
     }
   };
