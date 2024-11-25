@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Box, Typography, IconButton, Collapse } from "@mui/material";
+import {
+  // Button,
+  Box,
+  Typography,
+  IconButton,
+  Collapse,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import axios from "axios";
@@ -50,9 +56,9 @@ const OverviewDataPage: React.FC = () => {
 
   return (
     <Box sx={{ p: 2, maxWidth: 1000, margin: "0 auto" }}>
-      <Button variant="contained" color="primary" onClick={handleGetData}>
-        Update data sets
-      </Button>
+      {/* <Button variant="contained" color="primary" onClick={handleGetData}>
+        Récupérer les jeux depuis la base de données
+      </Button> */}
 
       <Box sx={{ mt: 4 }}>
         {Object.entries(groupedDataSets).map(([openDataSrc, group]) => (

@@ -204,6 +204,7 @@ const PostDataPage: React.FC = () => {
       navigate("/");
     }
   };
+  isLoading && console.log("Loading");
 
   return (
     <Box
