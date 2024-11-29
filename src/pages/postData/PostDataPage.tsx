@@ -37,7 +37,6 @@ const PostDataPage: React.FC = () => {
     address,
     notDisplayed,
     spotCoords,
-    // openDataKeys,
     setOpenDataKeys,
     conditionalKeys,
     setSpotKeysValidationError,
@@ -60,124 +59,6 @@ const PostDataPage: React.FC = () => {
       setOpenDataKeys(location.state.openDataKeys);
     }
   }, [location.state]);
-
-  // const handleCreateData = async () => {
-  //   // Clear previous validation errors
-  //   setSpotKeysValidationError("");
-  //   setDisplayKeysValidationError("");
-  //   setOpenDataKeysValidationError("");
-
-  //   // Validation logic for SpotKeysComp
-  //   if (!spotName || !spotObject || !pathName || !apiUrl || !lon || !lat) {
-  //     setSpotKeysValidationError("Tous les champs doivent être remplis.");
-  //     return;
-  //   }
-
-  //   // Convert spotObject from string to actual object
-  //   let parsedSpotObject;
-
-  //   try {
-  //     parsedSpotObject = Function(`"use strict";return (${spotObject})`)();
-  //   } catch (error) {
-  //     setSpotKeysValidationError("L'objet de l'API n'est pas valide.");
-  //     return;
-  //   }
-
-  //   // Validation logic for DisplayKeysComp
-  //   if (!title || !url || !coords) {
-  //     setDisplayKeysValidationError("Remplir les champs obligatoires.");
-  //     return;
-  //   }
-
-  //   // Validation logic for OpenDataKeysComp
-  //   if (
-  //     !selectedOpenDataKeys ||
-  //     !selectedOpenDataKeys.openDataPath ||
-  //     !selectedOpenDataKeys.openDataSrc ||
-  //     !selectedOpenDataKeys.openDataUrl
-  //   ) {
-  //     setOpenDataKeysValidationError(
-  //       "Tous les champs de la source Open Data doivent être remplis."
-  //     );
-  //     return;
-  //   }
-
-  //   // Transform img into an array
-  //   const imgArray = img ? [img] : [""];
-
-  //   // Split strings by spaces and/or commas for fixedDisplayed, firstDisplayed, address, notDisplayed
-  //   const fixedDisplayedArray = fixedDisplayed
-  //     ? fixedDisplayed.split(/[ ,]+/)
-  //     : [""];
-  //   const firstDisplayedArray = firstDisplayed
-  //     ? firstDisplayed.split(/[ ,]+/)
-  //     : [""];
-  //   const addressArray = address ? address.split(/[ ,]+/) : [""];
-  //   const notDisplayedArray = notDisplayed ? notDisplayed.split(/[ ,]+/) : [""];
-
-  //   // Set spotCoords to coords if spotCoords is empty
-  //   const finalSpotCoords = spotCoords || coords;
-  //   console.log("finalSpotCoords: ", finalSpotCoords);
-
-  //   // Set displayKeys with transformed values
-  //   setDisplayKeys({
-  //     title,
-  //     comment,
-  //     url,
-  //     featureIsPoint,
-  //     coords,
-  //     spotCoords: finalSpotCoords,
-  //     fixedDisplayed: fixedDisplayedArray,
-  //     img: imgArray,
-  //     firstDisplayed: firstDisplayedArray,
-  //     address: addressArray,
-  //     notDisplayed: notDisplayedArray,
-  //     path: pathName,
-  //   });
-
-  //   // Add lon and lat to conditionalKeys, limit to 2 elements
-  //   conditionalKeys.push(lon, lat);
-  //   if (conditionalKeys.length > 2) {
-  //     conditionalKeys.splice(0, conditionalKeys.length - 2);
-  //   }
-
-  //   // API request to backend
-  //   const backendApiUrl = import.meta.env.VITE_API_URI;
-
-  //   try {
-  //     await axios.post(`${backendApiUrl}/add-data-set`, {
-  //       spotName,
-  //       spotObject: parsedSpotObject,
-  //       pathName,
-  //       apiUrl,
-  //       conditionalKeys,
-  //       displayKeys: {
-  //         title,
-  //         comment,
-  //         url,
-  //         featureIsPoint,
-  //         coords,
-  //         spotCoords: finalSpotCoords,
-  //         fixedDisplayed: fixedDisplayedArray,
-  //         img: imgArray,
-  //         firstDisplayed: firstDisplayedArray,
-  //         address: addressArray,
-  //         notDisplayed: notDisplayedArray,
-  //         path: pathName,
-  //       },
-  //       openDataKeys: selectedOpenDataKeys,
-  //     });
-  //     setIsFirstRequestSuccessful(true);
-  //     setModalMessage("Requête réussie");
-  //   } catch (error: any) {
-  //     setIsFirstRequestSuccessful(false);
-  //     setModalMessage(
-  //       `Erreur: ${error?.message || "Une erreur inconnue est survenue"}`
-  //     );
-  //   } finally {
-  //     setFirstModalOpen(true);
-  //   }
-  // };
 
   // Get form values
   // Create a new spot Model in backend: in models/spots
@@ -237,22 +118,7 @@ const PostDataPage: React.FC = () => {
 
     // Set spotCoords to coords if spotCoords is empty
     const finalSpotCoords = spotCoords || coords;
-    console.log("finalSpotCoords: ", finalSpotCoords);
 
-    // const displayKeys = ${JSON.stringify(
-    //   {
-    //     ...displayKeys,
-    //     notDisplayed: [
-    //       ...(displayKeys.notDisplayed || []),
-    //       "_id",
-    //       "__v",
-    //       "createdAt",
-    //       "updatedAt",
-    //     ],
-    //   },
-    //   null,
-    //   2
-    // )};
     // Set displayKeys with transformed values
     setDisplayKeys({
       title,
@@ -265,7 +131,6 @@ const PostDataPage: React.FC = () => {
       img: imgArray,
       firstDisplayed: firstDisplayedArray,
       address: addressArray,
-      // notDisplayed: notDisplayedArray,
       notDisplayed: [
         ...(notDisplayedArray || []),
         "_id",
@@ -286,38 +151,11 @@ const PostDataPage: React.FC = () => {
     const backendApiUrl = import.meta.env.VITE_API_URI;
 
     try {
-      // await axios.post(`${backendApiUrl}/add-data-set`, {
-      //   spotName,
-      //   spotObject: parsedSpotObject,
-      //   pathName,
-      //   apiUrl,
-      //   conditionalKeys,
-      //   displayKeys: {
-      //     title,
-      //     comment,
-      //     url,
-      //     featureIsPoint,
-      //     coords,
-      //     spotCoords: finalSpotCoords,
-      //     fixedDisplayed: fixedDisplayedArray,
-      //     img: imgArray,
-      //     firstDisplayed: firstDisplayedArray,
-      //     address: addressArray,
-      //     notDisplayed: notDisplayedArray,
-      //     path: pathName,
-      //   },
-      //   openDataKeys: selectedOpenDataKeys,
-      // });
-      //
-      //
-      //
       await axios.post(`${backendApiUrl}/add-model`, {
         spotName,
         spotObject: parsedSpotObject,
       });
-      //
-      //
-      //
+
       setIsFirstRequestSuccessful(true);
       setModalMessage("Requête réussie");
     } catch (error: any) {
@@ -329,21 +167,6 @@ const PostDataPage: React.FC = () => {
       setFirstModalOpen(true);
     }
   };
-
-  // const displayKeys = ${JSON.stringify(
-  //   {
-  //     ...displayKeys,
-  //     notDisplayed: [
-  //       ...(displayKeys.notDisplayed || []),
-  //       "_id",
-  //       "__v",
-  //       "createdAt",
-  //       "updatedAt",
-  //     ],
-  //   },
-  //   null,
-  //   2
-  // )};
 
   // Create DataSet + Spots in DB
   const handleSaveToDatabase = async () => {
@@ -393,7 +216,6 @@ const PostDataPage: React.FC = () => {
       <Button
         variant="contained"
         color="primary"
-        // onClick={handleCreateData}
         onClick={handleCreateModel}
         sx={{ mt: 4 }}
       >
